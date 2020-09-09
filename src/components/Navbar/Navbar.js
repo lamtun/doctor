@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { Button } from "../Button/Button";
-import "./Navbar.scss";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { Button } from '../Button/Button';
+import navbarRoutes from '../../routes/navbar.routes';
+import './Navbar.scss';
 
 Navbar.propTypes = {};
 
@@ -18,59 +19,57 @@ function Navbar(props) {
       setButton(true);
     }
   };
-
+  const handleActive = (id) => {
+    const activeClass = document.getElementById(id);
+    const oldActiveClass = document.getElementsByClassName('nav-links-active');
+    if (oldActiveClass.length) {
+      oldActiveClass[0].className = 'nav-links';
+    }
+    activeClass.className = 'nav-links-active';
+  };
+  const handleDisableActive = () => {
+    const oldActiveClass = document.getElementsByClassName('nav-links-active');
+    if (oldActiveClass.length) {
+      oldActiveClass[0].className = 'nav-links';
+    }
+  };
   useEffect(() => {
     showButton();
   }, []);
 
-  window.addEventListener("resize", showButton);
+  window.addEventListener('resize', showButton);
   return (
     <>
-      <nav className="navbar">
-        <div className="navbar-container">
-          <Link to="/" className="navbar-logo">
+      <nav className='navbar'>
+        <div className='navbar-container'>
+          <Link to='/' className='navbar-logo'>
             LDL
-            <i className="fab fa-typo3" />
+            <i className='fab fa-typo3' />
           </Link>
-          <div className="menu-icon" onClick={handleClick}>
-            <i className={click ? "fas fa-times" : "fas fa-bars"} />
+          <div className='menu-icon' onClick={handleClick}>
+            <i className={click ? 'fas fa-times' : 'fas fa-bars'} />
           </div>
-          <ul className={click ? "nav-menu active" : "nav-menu"}>
-            <li className="nav-item">
-              <Link to="/" className="nav-links" onClick={closeMobileMenu}>
-                Home
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link
-                to="/services"
-                className="nav-links"
-                onClick={closeMobileMenu}
-              >
-                Services
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link
-                to="/products"
-                className="nav-links"
-                onClick={closeMobileMenu}
-              >
-                Products
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                to="/sign-up"
-                className="nav-links-mobile"
-                onClick={closeMobileMenu}
-              >
-                Sign Up
-              </Link>
-            </li>
+          <ul className={click ? 'nav-menu active' : 'nav-menu'}>
+            {navbarRoutes.map((item) => {
+              return (
+                <li className='nav-item'>
+                  <Link
+                    to={item.to}
+                    className={item.className}
+                    onClick={(closeMobileMenu, () => handleActive(item.id))}
+                    id={item.id}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
-          {button && <Button buttonStyle="btn--outline">SIGN UP</Button>}
+          {button && (
+            <Button buttonStyle='btn--outline' onClick={handleDisableActive}>
+              SIGN UP
+            </Button>
+          )}
         </div>
       </nav>
     </>
